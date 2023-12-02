@@ -41,13 +41,13 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 
 	/**
 	 * Option Name For a Perl Regex - matches are deleted from string values
-	 * @see self::stringify()
+	 * @see self::convertValue()
 	 */
 	final const OPTION_CLEAN = 'clean';
 
 	/**
 	 * Option Name For an Array of Perl Regexes - format checkers for string values
-	 * @see self::stringify()
+	 * @see self::convertValue()
 	 */
 	final const OPTION_FORMATS = 'formats';
 
@@ -128,16 +128,16 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 	}
 
 	/**
-	 * Convert Value to String if appropriate
+	 * Convert Value to Usable Type
 	 *
-	 * Values not to be converted to a string will be returned as-is.
+	 * Values can first be converted to a usable type, e.g. string.
 	 * String values are later checked with {@see self::OPTION_FORMATS}.
 	 *
 	 * @see self::preFilterFormats()
 	 */
-	protected function stringify(mixed $value): mixed
+	protected function convertValue(mixed $value): mixed
 	{
-		return (string)$value;
+		return $value;
 	}
 
 	/**
@@ -148,7 +148,7 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 		if (is_null($value) && !$this->options[self::OPTION_NULL]) {
 			return $this->handleIllegalValue($value);
 		}
-		$value = $this->stringify($value);
+		$value = $this->convertValue($value);
 		if (!is_string($value)) {
 			return $value;
 		}

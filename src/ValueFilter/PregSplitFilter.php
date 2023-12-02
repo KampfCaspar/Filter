@@ -33,7 +33,7 @@ class PregSplitFilter extends ValueFilter
 		self::OPTION_LIMIT => -1,
 	] + parent::DEFAULT_OPTIONS;
 
-	protected function stringify(mixed $value): mixed
+	protected function convertValue(mixed $value): string
 	{
 		return strval($value); // we deal ONLY in strings
 	}

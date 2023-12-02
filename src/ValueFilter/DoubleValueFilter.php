@@ -39,7 +39,7 @@ class DoubleValueFilter extends ValueFilter
 		],
 	] + parent::DEFAULT_OPTIONS;
 
-	protected function stringify(mixed $value): int|float|string
+	protected function convertValue(mixed $value): int|float|string
 	{
 		// we accept only numbers - everything else will be converted to string
 		return is_int($value) || is_double($value) ? $value : (string)$value;
