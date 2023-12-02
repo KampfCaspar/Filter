@@ -1,0 +1,87 @@
+<?php declare(strict_types=1);
+/**
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * @license AGPL-3.0-or-later
+ * @author KampfCaspar <code@kampfcaspar.ch>
+ */
+
+namespace KampfCaspar\Filter;
+
+use Psr\Log\LoggerInterface;
+
+/**
+ * Array Filter Base Class
+ */
+abstract class ArrayFilter extends AbstractFilter implements ArrayFilterInterface
+{
+	/**
+	 * Option Name For a Bool - enabling changing the ArrayAccess instance for validity
+	 */
+	final const OPTION_CORRECT = 'correct';
+
+	public const DEFAULT_OPTIONS = [
+		self::OPTION_CORRECT => false,
+	] + parent::DEFAULT_OPTIONS;
+
+	protected const INHERIT_OPTIONS = [
+		self::OPTION_SOFT_FAILURE, self::OPTION_CORRECT
+	];
+
+	/**
+	 * Array Filter Creator
+	 * @see self::instantiate()
+	 */
+	public static function createFilter(
+		mixed $filter,
+		LoggerInterface|AbstractFilter|null $parent = null,
+	): ArrayFilterInterface|callable
+	{
+		try {
+			// @phpstan-ignore-next-line as we catch Type Errors
+			return static::instantiate($filter, $parent);
+		}
+		catch (\TypeError $e) {
+			throw new \BadMethodCallException('could not instantiate ArrayFilter', $e->getCode(), $e);
+		}
+	}
+
+	/**
+	 * Get All Keys
+	 * @param \ArrayObject<string,mixed>|\ArrayIterator<string,mixed>|array<string,mixed> $object
+	 * @return string[]
+	 */
+	protected function getKeys(\ArrayObject|\ArrayIterator|array $object): array
+	{
+		if (is_array($object)) {
+			$keys = array_keys($object);
+		}
+		else {
+			$keys = array_keys($object->getArrayCopy());
+		}
+		return $keys;
+	}
+
+	/**
+	 * Handle an Error
+	 */
+	protected function handleError(string $error, bool $softFail = false): string
+	{
+		$filter = $this->options[self::OPTION_NAME] ?: get_class($this);
+		if (!$this->options[self::OPTION_SOFT_FAILURE] && !$softFail) {
+			throw new \DomainException(sprintf(
+				'filter %s failure: %s',
+				$filter,
+				$error,
+			));
+		}
+		$this->logger?->info('suppressed filter {filter} failure: {error}', [
+			'filter' => $filter,
+			'error' => $error,
+		]);
+		return $error;
+	}
+
+}
