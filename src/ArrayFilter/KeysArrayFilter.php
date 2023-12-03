@@ -18,7 +18,7 @@ use KampfCaspar\Filter\ArrayFilter;
  * Check an ArrayAccess instance for missing keys ({@see self::OPTION_MANDATORY})
  * and unexpected keys ({@see self::OPTION_OPTIONAL}).
  */
-class AllowedMembersFilter extends ArrayFilter
+class KeysArrayFilter extends ArrayFilter
 {
 	/**
 	 * Option Name For an Array of Keys - on filtering, missing keys will fail

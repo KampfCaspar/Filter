@@ -11,23 +11,23 @@
 namespace KampfCaspar\Test\Filter\ArrayFilter;
 
 use Beste\Psr\Log\TestLogger;
-use KampfCaspar\Filter\ArrayFilter\AllowedMembersFilter;
+use KampfCaspar\Filter\ArrayFilter\KeysArrayFilter;
 use PHPUnit\Framework\TestCase;
 
-class AllowedMembersFilterTest extends TestCase
+class KeysArrayFilterTest extends TestCase
 {
 
-	private function referenceDetour(AllowedMembersFilter $filter, $arr): array
+	private function referenceDetour(KeysArrayFilter $filter, $arr): array
 	{
 		return $filter->filterArray($arr);
 	}
 
 	public function testFilterArray(): void
 	{
-		$filter = new AllowedMembersFilter([
-			AllowedMembersFilter::OPTION_MANDATORY => ['a'],
-			AllowedMembersFilter::OPTION_OPTIONAL => 'b',
-			AllowedMembersFilter::OPTION_SOFT_FAILURE => true,
+		$filter = new KeysArrayFilter([
+			KeysArrayFilter::OPTION_MANDATORY => ['a'],
+			KeysArrayFilter::OPTION_OPTIONAL => 'b',
+			KeysArrayFilter::OPTION_SOFT_FAILURE => true,
 		]);
 
 		$logger = TestLogger::create();
@@ -53,7 +53,7 @@ class AllowedMembersFilterTest extends TestCase
 		self::assertCount(2, $logger->records);
 
 		$filter->setOptions([
-			AllowedMembersFilter::OPTION_SOFT_FAILURE => false,
+			KeysArrayFilter::OPTION_SOFT_FAILURE => false,
 		]);
 		self::expectException(\DomainException::class);
 		$filter->filterArray($arr);
@@ -61,11 +61,11 @@ class AllowedMembersFilterTest extends TestCase
 
 	public function testFilterArrayClear(): void
 	{
-		$filter = new AllowedMembersFilter([
-			AllowedMembersFilter::OPTION_MANDATORY => ['a'],
-			AllowedMembersFilter::OPTION_OPTIONAL => 'b',
-			AllowedMembersFilter::OPTION_SOFT_FAILURE => false,
-			AllowedMembersFilter::OPTION_CORRECT => true,
+		$filter = new KeysArrayFilter([
+			KeysArrayFilter::OPTION_MANDATORY => ['a'],
+			KeysArrayFilter::OPTION_OPTIONAL => 'b',
+			KeysArrayFilter::OPTION_SOFT_FAILURE => false,
+			KeysArrayFilter::OPTION_CORRECT => true,
 		]);
 
 		$logger = TestLogger::create();
