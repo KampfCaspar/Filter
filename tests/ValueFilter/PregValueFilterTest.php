@@ -10,23 +10,23 @@
 
 namespace KampfCaspar\Test\Filter\ValueFilter;
 
-use KampfCaspar\Filter\ValueFilter\PregFilter;
+use KampfCaspar\Filter\ValueFilter\PregValueFilter;
 use PHPUnit\Framework\TestCase;
 
-class PregFilterTest extends TestCase
+class PregValueFilterTest extends TestCase
 {
 
 	public function testFilterValue(): void
 	{
-		$filter = new PregFilter([
-			PregFilter::OPTION_PREGS => '/abc/',
-			PregFilter::OPTION_SOFT_FAILURE => true,
+		$filter = new PregValueFilter([
+			PregValueFilter::OPTION_PREGS => '/abc/',
+			PregValueFilter::OPTION_SOFT_FAILURE => true,
 		]);
 		self::assertEquals('abcdef', $filter->filterValue('abcdef'));
 		self::assertNull($filter->filterValue('bcdef'));
-		$filter = new PregFilter([
-			PregFilter::OPTION_PREGS => ['/abc/', '/^f/'],
-			PregFilter::OPTION_SOFT_FAILURE => true,
+		$filter = new PregValueFilter([
+			PregValueFilter::OPTION_PREGS => ['/abc/', '/^f/'],
+			PregValueFilter::OPTION_SOFT_FAILURE => true,
 		]);
 		self::assertEquals('abcdef', $filter->filterValue('abcdef'));
 		self::assertEquals('fg', $filter->filterValue('fg'));
@@ -35,15 +35,15 @@ class PregFilterTest extends TestCase
 
 	public function testFilterValueErrorNoRegex(): void
 	{
-		$filter = new PregFilter();
+		$filter = new PregValueFilter();
 		self::expectException(\BadMethodCallException::class);
 		$filter->filterValue(3.1);
 	}
 
 	public function testFilterValueErrorNoStringRegex(): void
 	{
-		$filter = new PregFilter([
-			PregFilter::OPTION_PREGS => 3.1,
+		$filter = new PregValueFilter([
+			PregValueFilter::OPTION_PREGS => 3.1,
 		]);
 		self::expectException(\BadMethodCallException::class);
 		$filter->filterValue(3.1);
@@ -51,8 +51,8 @@ class PregFilterTest extends TestCase
 
 	public function testFilterValueErrorInvalidRegex(): void
 	{
-		$filter = new PregFilter([
-			PregFilter::OPTION_PREGS => 'abc',
+		$filter = new PregValueFilter([
+			PregValueFilter::OPTION_PREGS => 'abc',
 		]);
 		self::expectException(\BadMethodCallException::class);
 		$filter->filterValue(3.1);

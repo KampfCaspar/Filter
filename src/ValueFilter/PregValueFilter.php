@@ -15,7 +15,7 @@ use KampfCaspar\Filter\ValueFilter;
 /**
  * Value Filter Checking Against Perl Regular Expressions
  */
-class PregFilter extends ValueFilter
+class PregValueFilter extends ValueFilter
 {
 	/**
 	 * Option Name For an Array of Perl Regular Expresstions - values are checked against those
@@ -25,6 +25,11 @@ class PregFilter extends ValueFilter
 	public const DEFAULT_OPTIONS = [
 		self::OPTION_PREGS => null,
 	] + parent::DEFAULT_OPTIONS;
+
+	protected function convertValue(mixed $value): string
+	{
+		return strval($value); // we deal ONLY in strings
+	}
 
 	public function doFilterValue(mixed $value): mixed
 	{
