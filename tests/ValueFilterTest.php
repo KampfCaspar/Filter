@@ -82,7 +82,7 @@ class ValueFilterTest extends TestCase
 			NullValueFilterStub::OPTION_SOFT_FAILURE => 'b',
 		]);
 		/** @var ValueFilter $filter */
-		$filter = ValueFilter::createFilter(NullValueFilterStub::class, $parent);
+		$filter = ValueFilter::createFilter(NullValueFilterStub::class, null, $parent->_getOptions());
 		self::assertEquals('a', $filter->_getOptions()[NullValueFilterStub::OPTION_NULL]);
 		self::assertEquals('b', $filter->_getOptions()[NullValueFilterStub::OPTION_SOFT_FAILURE]);
 
@@ -91,7 +91,7 @@ class ValueFilterTest extends TestCase
 		}
 		catch (\Throwable) {}
 		self::expectException(\Exception::class);
-		ValueFilter::createFilter(NullValueFilterStub::class, $parent);
+		ValueFilter::createFilter(NullValueFilterStub::class, $logger, $parent->_getOptions());
 	}
 
 

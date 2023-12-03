@@ -11,26 +11,21 @@
 namespace KampfCaspar\Filter\ArrayFilter;
 
 use KampfCaspar\Filter\ArrayFilter;
-use KampfCaspar\Filter\ArrayFilterInterface;
 
-/**
- * Compounded ArrayFilter - applies several ArrayFilters in one go
- */
-class CompoundedArrayFilter extends ArrayFilter
+class CallableArrayFilter extends ArrayFilter
 {
 
 	public const DEFAULT_OPTIONS = [
-		self::OPTION_COMPOUNDED_FILTERS => [],
+		self::OPTION_CALLABLE => null,
 	] + parent::DEFAULT_OPTIONS;
 
 	public function filterArray(\ArrayObject|array|\ArrayIterator &$object): array
 	{
-		$errors = [];
-		foreach ($this->options[self::OPTION_COMPOUNDED_FILTERS] as &$filter) {
-			$filter = self::createFilter($filter, null, $this->options);
-			$errors += $filter->filterArray($object);
+		$callable = $this->options[self::OPTION_CALLABLE];
+		$result = $callable($object, $this);
+		if ($result) {
+			$this->handleError($result[0]);
 		}
-		return $errors;
+		return $result;
 	}
-
 }

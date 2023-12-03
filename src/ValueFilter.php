@@ -10,6 +10,7 @@
 
 namespace KampfCaspar\Filter;
 
+use KampfCaspar\Filter\ValueFilter\CallableValueFilter;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -63,22 +64,23 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 		self::OPTION_SOFT_FAILURE, self::OPTION_NULL
 	];
 
+	protected const CALLABLE_WRAPPER = CallableValueFilter::class;
+
 	/**
 	 * Value Filter Creator
 	 * @see self::instantiate()
 	 */
 	public static function createFilter(
 		mixed $filter,
-		LoggerInterface|AbstractFilter|null $parent = null,
-	): ValueFilterInterface|callable
+		?LoggerInterface $logger = null,
+		array $parentOptions = [],
+	): ValueFilterInterface
 	{
-		try {
-			// @phpstan-ignore-next-line as we catch Type Errors
-			return static::instantiate($filter, $parent);
+		$res = static::instantiate($filter, $logger, $parentOptions);
+		if (!$res instanceof ValueFilterInterface) {
+			throw new \BadMethodCallException('could not instantiate ValueFilter');
 		}
-		catch (\TypeError $e) {
-			throw new \BadMethodCallException('could not instantiate ValueFilter', $e->getCode(), $e);
-		}
+		return $res;
 	}
 
 	/**

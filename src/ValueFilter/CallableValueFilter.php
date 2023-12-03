@@ -11,34 +11,23 @@
 namespace KampfCaspar\Filter\ValueFilter;
 
 use KampfCaspar\Filter\ValueFilter;
-use KampfCaspar\Filter\ValueFilterInterface;
 
-/**
- * Compounded ValueFilter - applies several ValueFilters in one go
- */
-class CompoundedValueFilter extends ValueFilter
+class CallableValueFilter extends ValueFilter
 {
 
 	public const DEFAULT_OPTIONS = [
-		self::OPTION_COMPOUNDED_FILTERS => [],
+		self::OPTION_CALLABLE => null,
 	] + parent::DEFAULT_OPTIONS;
 
-	/**
-	 * @stub
-	 * @codeCoverageIgnore
-	 */
 	protected function doFilterValue(mixed $value): mixed
 	{
-		return $value;
-	}
-
-	public function filterValue(mixed $value): mixed
-	{
-		foreach ($this->options[self::OPTION_COMPOUNDED_FILTERS] as &$filter) {
-			$filter = self::createFilter($filter, null, $this->options);
-			$value = $filter->filterValue($value);
+		$callable = $this->options[self::OPTION_CALLABLE];
+		/** @var mixed $old_value */
+		$old_value = $value;
+		$value = $callable($value, $this);
+		if (is_null($value)) {
+			$this->handleIllegalValue($old_value);
 		}
 		return $value;
 	}
-
 }

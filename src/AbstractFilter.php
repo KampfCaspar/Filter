@@ -46,6 +46,16 @@ abstract class AbstractFilter implements FilterInterface
 	final const OPTION_FILTER = 'filter';
 
 	/**
+	 * Option Name For a Callable - only used for callable wrappers
+	 */
+	final const OPTION_CALLABLE = 'callable';
+
+	/**
+	 * Option Name For an Array of Filter Specifications - only used for compounded filters
+	 */
+	final const OPTION_COMPOUNDED_FILTERS = 'filters';
+
+	/**
 	 * Default Options
 	 */
 	public const DEFAULT_OPTIONS = [
@@ -62,6 +72,8 @@ abstract class AbstractFilter implements FilterInterface
 		self::OPTION_SOFT_FAILURE,
 	];
 
+	protected const CALLABLE_WRAPPER = '';
+
 	/**
 	 * instantiate a filter from a specification
 	 *
@@ -75,37 +87,52 @@ abstract class AbstractFilter implements FilterInterface
 	 */
 	protected static function instantiate(
 		mixed $filter,
-		LoggerInterface|AbstractFilter|null $parent = null,
-	): FilterInterface|callable
+		?LoggerInterface $logger = null,
+		array $parentOptions = [],
+	): FilterInterface
 	{
-		if (is_string($filter)) {
-			/**
-			 * @var FilterInterface|callable $filter
-			 */
-			$filter = new $filter();
+		$options = [];
+		$class = null;
+		if (is_callable($filter)) {
+			if ($filter instanceof LoggerAwareInterface && $logger) {
+				$filter->setLogger($logger);
+			}
+			$class = static::CALLABLE_WRAPPER;
+			$options = [
+				self::OPTION_CALLABLE => $filter,
+			];
+		}
+		elseif (is_string($filter)) {
+			$class = $filter;
+		}
+		elseif (
+			is_array($filter) && array_is_list($filter) && count($filter) === 2
+			&& is_string($filter[0]) && is_array($filter[1])
+		) {
+			$class = $filter[0];
+			$options = $filter[1];
 		}
 		elseif (is_array($filter) && isset($filter[self::OPTION_FILTER])) {
-			/**
-			 * @var FilterInterface $filter
-			 */
+			$class = $filter[self::OPTION_FILTER];
+			$options = $filter;
+			/** @var FilterInterface $filter */
 			$filter = new ($filter[self::OPTION_FILTER])($filter);
 		}
-		elseif (!is_callable($filter) && !$filter instanceof FilterInterface) {
+
+		if ($class) {
+			$filter = new $class();
+		}
+		if (!$filter instanceof FilterInterface) {
 			throw new \DomainException('unknown filter specification');
 		}
 
-		// @phpstan-ignore-next-line because you somehow ignore the type check
-		$logger = ($parent instanceof FilterInterface) ? $parent->logger : $parent;
-		if ($logger && ($filter instanceof LoggerAwareInterface)) {
-			// @phpstan-ignore-next-line because you somehow ignore the type check
-			$filter->setLogger($parent->logger);
+		if ($logger) {
+			$filter->setLogger($logger);
 		}
-		if (($filter instanceof FilterInterface) && ($parent instanceof FilterInterface)) {
-			$filter->setOptions(
-				// @phpstan-ignore-next-line because you somehow ignore the type check
-				array_intersect_key($parent->options, array_flip(static::INHERIT_OPTIONS))
-			);
-		}
+		$filter->setOptions(
+			$options +
+			array_intersect_key($parentOptions, array_flip(static::INHERIT_OPTIONS))
+		);
 
 		return $filter;
 	}
@@ -146,8 +173,8 @@ abstract class AbstractFilter implements FilterInterface
 	}
 
 	/**
-	 * @return mixed[]
 	 * @internal
+	 * @return array<string,mixed>
 	 */
 	public function _getOptions(): array
 	{

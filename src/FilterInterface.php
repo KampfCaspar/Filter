@@ -36,4 +36,5 @@ interface FilterInterface extends LoggerAwareInterface
 	 * @throws \BadMethodCallException  on unknown/wrong option
 	 */
 	public function setOptions(array $options): static;
+
 }

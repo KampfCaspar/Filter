@@ -42,7 +42,7 @@ class ArrayFilterTest extends TestCase
 			NullArrayFilterStub::OPTION_SOFT_FAILURE => 'b',
 		]);
 		/** @var ArrayFilter $filter */
-		$filter = ArrayFilter::createFilter(NullArrayFilterStub::class, $parent);
+		$filter = ArrayFilter::createFilter(NullArrayFilterStub::class, null,  $parent->_getOptions());
 		self::assertEquals('a', $filter->_getOptions()[NullArrayFilterStub::OPTION_CORRECT]);
 		self::assertEquals('b', $filter->_getOptions()[NullArrayFilterStub::OPTION_SOFT_FAILURE]);
 
@@ -51,7 +51,7 @@ class ArrayFilterTest extends TestCase
 		}
 		catch (\Throwable) {}
 		self::expectException(\Exception::class);
-		ArrayFilter::createFilter(NullArrayFilterStub::class, $parent);
+		ArrayFilter::createFilter(NullArrayFilterStub::class, $logger, $parent->_getOptions());
 	}
 
 

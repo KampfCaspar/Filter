@@ -10,6 +10,7 @@
 
 namespace KampfCaspar\Filter;
 
+use KampfCaspar\Filter\ArrayFilter\CallableArrayFilter;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -30,22 +31,23 @@ abstract class ArrayFilter extends AbstractFilter implements ArrayFilterInterfac
 		self::OPTION_SOFT_FAILURE, self::OPTION_CORRECT
 	];
 
+	protected const CALLABLE_WRAPPER = CallableArrayFilter::class;
+
 	/**
 	 * Array Filter Creator
 	 * @see self::instantiate()
 	 */
 	public static function createFilter(
 		mixed $filter,
-		LoggerInterface|AbstractFilter|null $parent = null,
-	): ArrayFilterInterface|callable
+		?LoggerInterface $logger = null,
+		array $parentOptions = [],
+	): ArrayFilterInterface
 	{
-		try {
-			// @phpstan-ignore-next-line as we catch Type Errors
-			return static::instantiate($filter, $parent);
+		$res = static::instantiate($filter, $logger, $parentOptions);
+		if (!$res instanceof ArrayFilterInterface) {
+			throw new \BadMethodCallException('could not instantiate ArrayFilter');
 		}
-		catch (\TypeError $e) {
-			throw new \BadMethodCallException('could not instantiate ArrayFilter', $e->getCode(), $e);
-		}
+		return $res;
 	}
 
 	/**
