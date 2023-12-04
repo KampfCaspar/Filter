@@ -71,7 +71,7 @@ class AllowedValuesFilterTest extends TestCase
 	{
 		$filter = new AllowedValuesFilter();
 		$filter->setOptions([
-			AllowedValuesFilter::OPTION_SCALARITY => 'array',
+			AllowedValuesFilter::OPTION_SCALARITY => 'list',
 			AllowedValuesFilter::OPTION_SOFT_FAILURE => true,
 			AllowedValuesFilter::OPTION_WHITELIST => ['alpha', 'beta'],
 		]);

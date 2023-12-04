@@ -23,8 +23,8 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 	 *
 	 * Values may be:
 	 *   * 'scalar': only scalar values are accepted
-	 *   * 'not-array': accept scalar values and objects
-	 *   * 'array': only an array of values is accepted - scalar values are silently converted
+	 *   * 'not-list': accept scalar values and objects
+	 *   * 'list': only a linear array of values is accepted - all other values are silently converted
 	 *   * null: accept any
 	 *
 	 * The definition of scalarity differs from plain PHP as it includes NULL ({@see self::OPTION_NULL})
@@ -131,13 +131,13 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 				$value = $this->handleIllegalValue($value);
 			}
 		}
-		elseif ($type === 'not-array') {
-			if (is_array($value)) {
+		elseif ($type === 'not-list') {
+			if (is_array($value) && array_is_list($value)) {
 				$value = $this->handleIllegalValue($value);
 			}
 		}
-		elseif ($type === 'array') {
-			if (!is_array($value)) {
+		elseif ($type === 'list') {
+			if (!is_array($value) || !array_is_list($value)) {
 				$value = [$value];
 			}
 		}
@@ -214,13 +214,14 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 		// @phpstan-ignore-next-line as your warnings are misguided
 		if (is_null($value) || (is_array($value) && count($value)===0)) {
 			$value = $default;
-			if (is_scalar($value) && $this->options[self::OPTION_SCALARITY] == 'array') {
+			$scalarity = $this->options[self::OPTION_SCALARITY];
+			if (is_scalar($value) && $scalarity === 'list') {
 				$this->logger?->warning('scalar default value "{value}" forced to array', [
 					'value' => $value,
 				]);
 				$value = (array)$value;
 			}
-			if (is_array($value) && $this->options[self::OPTION_SCALARITY] == 'scalar') {
+			if (is_array($value) && !is_null($scalarity) && $scalarity !== 'list') {
 				$first = reset($value);
 				$this->logger?->warning('array default value forced to its first element "{first}"', [
 					'first' => $first,
@@ -240,7 +241,7 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 	public function filterValue(mixed $value): mixed
 	{
 		$value = $this->preFilterScalarity($value);
-		if (is_array($value)) {
+		if (is_array($value) && array_is_list($value)) {
 			foreach ($value as &$one) {
 				$one = $this->preFilterFormats($one);
 				if (!is_null($one)) {

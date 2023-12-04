@@ -80,7 +80,7 @@ class DoubleValueFilterTest extends TestCase
 	{
 		$filter = new DoubleValueFilter();
 		$filter->setOptions([
-			DoubleValueFilter::OPTION_SCALARITY => 'array',
+			DoubleValueFilter::OPTION_SCALARITY => 'list',
 			DoubleValueFilter::OPTION_SOFT_FAILURE => true,
 		]);
 		self::assertEquals([3.1], $filter->filterValue(3.1));

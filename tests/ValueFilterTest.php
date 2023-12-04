@@ -34,7 +34,7 @@ class ValueFilterTest extends TestCase
 		self::assertNull($filter->filterValue([3]));
 		self::assertNull($filter->filterValue(new StringableValue()));
 		$filter->setOptions([
-			ValueFilter::OPTION_SCALARITY => 'not-array'
+			ValueFilter::OPTION_SCALARITY => 'not-list'
 		]);
 		self::assertEquals(3, $filter->filterValue(3));
 		self::assertNull($filter->filterValue([3]));
@@ -43,7 +43,7 @@ class ValueFilterTest extends TestCase
 			$filter->filterValue(new StringableValue()),
 		);
 		$filter->setOptions([
-			ValueFilter::OPTION_SCALARITY => 'array'
+			ValueFilter::OPTION_SCALARITY => 'list'
 		]);
 		self::assertEquals([3], $filter->filterValue([3]));
 		self::assertEquals([3], $filter->filterValue(3));
@@ -70,12 +70,12 @@ class ValueFilterTest extends TestCase
 		self::assertIsString($filter->filterValue(new StringableValue()));
 		self::assertNull($filter->filterValue(new \DateTimeImmutable('now')));
 		$filter->setOptions([
-			ValueFilter::OPTION_SCALARITY => 'not-array',
+			ValueFilter::OPTION_SCALARITY => 'not-list',
 		]);
 		self::assertIsString($filter->filterValue(new StringableValue()));
 		self::assertNull($filter->filterValue([new StringableValue()]));
 		$filter->setOptions([
-			ValueFilter::OPTION_SCALARITY => 'array',
+			ValueFilter::OPTION_SCALARITY => 'list',
 		]);
 		self::assertIsString($filter->filterValue(new StringableValue())[0]);
 		self::assertIsString($filter->filterValue([new StringableValue()])[0]);
