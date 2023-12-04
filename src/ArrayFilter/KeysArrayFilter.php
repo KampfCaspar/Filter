@@ -23,12 +23,12 @@ class KeysArrayFilter extends ArrayFilter
 	/**
 	 * Option Name For an Array of Keys - on filtering, missing keys will fail
 	 */
-	final const OPTION_MANDATORY = 'mandatory';
+	final const OPTION_MANDATORY = '_mandatory';
 
 	/**
 	 * Option Name for an Array of Keys - on filtering, unlisted keys will fail
 	 */
-	final const OPTION_OPTIONAL = 'optionals';
+	final const OPTION_OPTIONAL = '_optionals';
 
 	public const DEFAULT_OPTIONS = [
 		self::OPTION_MANDATORY => [],

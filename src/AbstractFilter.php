@@ -31,29 +31,29 @@ abstract class AbstractFilter implements FilterInterface
 	/**
 	 * Option Name For a String - giving the filter a name, primarily for error messages
 	 */
-	final const OPTION_NAME = 'name';
+	final const OPTION_NAME = '_name';
 
 	/**
 	 * Option Name For a Bool - switching off exception throwing
 	 */
-	final const OPTION_SOFT_FAILURE = 'soft';
+	final const OPTION_SOFT_FAILURE = '_soft';
 
 	/**
 	 * Option Name For a String - used to instantiate object in filter creation
 	 * @see ValueFilter::createFilter()
 	 * @see ArrayFilter::createFilter()
 	 */
-	final const OPTION_FILTER = 'filter';
+	final const OPTION_FILTER = '_filter';
 
 	/**
 	 * Option Name For a Callable - only used for callable wrappers
 	 */
-	final const OPTION_CALLABLE = 'callable';
+	final const OPTION_CALLABLE = '_callable';
 
 	/**
 	 * Option Name For an Array of Filter Specifications - only used for compounded filters
 	 */
-	final const OPTION_COMPOUNDED_FILTERS = 'filters';
+	final const OPTION_COMPOUNDED_FILTERS = '_filters';
 
 	/**
 	 * Default Options

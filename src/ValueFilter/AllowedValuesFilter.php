@@ -20,7 +20,7 @@ class AllowedValuesFilter extends ValueFilter
 	/**
 	 * Option Name For an Array of Mixed Values - only those exact values are accepted
 	 */
-	final const OPTION_WHITELIST = 'whitelist';
+	final const OPTION_WHITELIST = '_whitelist';
 
 	public const DEFAULT_OPTIONS = [
 		self::OPTION_WHITELIST => [],

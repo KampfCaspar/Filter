@@ -21,7 +21,7 @@ abstract class ArrayFilter extends AbstractFilter implements ArrayFilterInterfac
 	/**
 	 * Option Name For a Bool - enabling changing the ArrayAccess instance for validity
 	 */
-	final const OPTION_CORRECT = 'correct';
+	final const OPTION_CORRECT = '_correct';
 
 	public const DEFAULT_OPTIONS = [
 		self::OPTION_CORRECT => false,

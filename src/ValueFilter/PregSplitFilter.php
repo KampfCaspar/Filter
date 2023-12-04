@@ -20,12 +20,12 @@ class PregSplitFilter extends ValueFilter
 	/**
 	 * Option Name For a Perl Regular Expression - used to split the strings
 	 */
-	final const OPTION_SPLIT = 'split';
+	final const OPTION_SPLIT = '_split';
 
 	/**
 	 * Option Name For an Int - defining the maximum parts to split into
 	 */
-	final const OPTION_LIMIT = 'limit';
+	final const OPTION_LIMIT = '_limit';
 
 	public const DEFAULT_OPTIONS = [
 		self::OPTION_SCALARITY => 'scalar',

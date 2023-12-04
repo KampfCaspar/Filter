@@ -26,31 +26,31 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 	 *   * 'array': only an array of values is accepted - scalar values are silently converted
 	 *   * null: accept any
 	 */
-	final const OPTION_SCALARITY = 'scalarity';
+	final const OPTION_SCALARITY = '_scalarity';
 
 	/**
 	 * Option Name For Mixed - the default value in case no/empty values are filtered
 	 *
 	 * The default value is silently converted to scalar/array scalarity.
 	 */
-	final const OPTION_DEFAULT = 'default';
+	final const OPTION_DEFAULT = '_default';
 
 	/**
 	 * Option Name For a Bool - indicating whether null values are accepted
 	 */
-	final const OPTION_NULL = 'null';
+	final const OPTION_NULL = '_null';
 
 	/**
 	 * Option Name For a Perl Regex - matches are deleted from string values
 	 * @see self::convertValue()
 	 */
-	final const OPTION_CLEAN = 'clean';
+	final const OPTION_CLEAN = '_clean';
 
 	/**
 	 * Option Name For an Array of Perl Regexes - format checkers for string values
 	 * @see self::convertValue()
 	 */
-	final const OPTION_FORMATS = 'formats';
+	final const OPTION_FORMATS = '_formats';
 
 	public const DEFAULT_OPTIONS = [
 		self::OPTION_SCALARITY => 'scalar',        // only accept scalar values

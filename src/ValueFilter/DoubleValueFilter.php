@@ -22,14 +22,14 @@ class DoubleValueFilter extends ValueFilter
 	 *
 	 * The minimum does *not* apply to {@see self::OPTION_DEFAULT} values.
 	 */
-	final const OPTION_MIN = 'min';
+	final const OPTION_MIN = '_min';
 
 	/**
 	 * Option Name for a Number - limiting filtered values to the top
 	 *
 	 * The maximum value does *not* apply to {@see self::OPTION_DEFAULT} values.
 	 */
-	final const OPTION_MAX = 'max';
+	final const OPTION_MAX = '_max';
 
 	public const DEFAULT_OPTIONS = [
 		self::OPTION_MIN => null,
