@@ -15,6 +15,7 @@ use KampfCaspar\Filter\ValueFilter;
 use KampfCaspar\Filter\ValueFilterInterface;
 use KampfCaspar\Test\Filter\Stubs\NullArrayFilterStub;
 use KampfCaspar\Test\Filter\Stubs\NullValueFilterStub;
+use KampfCaspar\Test\Filter\Stubs\StringableValue;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -22,20 +23,62 @@ class ValueFilterTest extends TestCase
 {
 	public function testScalarity(): void
 	{
-		$filter = new NullValueFilterStub();
+		$filter = new NullValueFilterStub([
+			ValueFilter::OPTION_SOFT_FAILURE => true,
+			ValueFilter::OPTION_STRINGIFY => false,
+		]);
 		$filter->setOptions([
 			ValueFilter::OPTION_SCALARITY => 'scalar'
 		]);
 		self::assertEquals(3, $filter->filterValue(3));
+		self::assertNull($filter->filterValue([3]));
+		self::assertNull($filter->filterValue(new StringableValue()));
+		$filter->setOptions([
+			ValueFilter::OPTION_SCALARITY => 'not-array'
+		]);
+		self::assertEquals(3, $filter->filterValue(3));
+		self::assertNull($filter->filterValue([3]));
+		self::assertInstanceOf(
+			StringableValue::class,
+			$filter->filterValue(new StringableValue()),
+		);
 		$filter->setOptions([
 			ValueFilter::OPTION_SCALARITY => 'array'
 		]);
+		self::assertEquals([3], $filter->filterValue([3]));
 		self::assertEquals([3], $filter->filterValue(3));
-		$filter->setOptions([
+	}
+
+	public function testScalarityUnknown(): void
+	{
+		$filter = new NullValueFilterStub([
 			ValueFilter::OPTION_SCALARITY => 'wrong'
 		]);
 		self::expectException(\BadMethodCallException::class);
 		self::assertEquals(3, $filter->filterValue(3));
+	}
+
+	public function testStringify(): void
+	{
+		$filter = new NullValueFilterStub([
+			ValueFilter::OPTION_SOFT_FAILURE => true,
+			ValueFilter::OPTION_STRINGIFY => true,
+		]);
+		$filter->setOptions([
+			ValueFilter::OPTION_SCALARITY => 'scalar',
+		]);
+		self::assertIsString($filter->filterValue(new StringableValue()));
+		self::assertNull($filter->filterValue(new \DateTimeImmutable('now')));
+		$filter->setOptions([
+			ValueFilter::OPTION_SCALARITY => 'not-array',
+		]);
+		self::assertIsString($filter->filterValue(new StringableValue()));
+		self::assertNull($filter->filterValue([new StringableValue()]));
+		$filter->setOptions([
+			ValueFilter::OPTION_SCALARITY => 'array',
+		]);
+		self::assertIsString($filter->filterValue(new StringableValue())[0]);
+		self::assertIsString($filter->filterValue([new StringableValue()])[0]);
 	}
 
 	public function testSetLogger(): void

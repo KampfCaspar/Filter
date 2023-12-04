@@ -23,10 +23,24 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 	 *
 	 * Values may be:
 	 *   * 'scalar': only scalar values are accepted
+	 *   * 'not-array': accept scalar values and objects
 	 *   * 'array': only an array of values is accepted - scalar values are silently converted
 	 *   * null: accept any
+	 *
+	 * The definition of scalarity differs from plain PHP as it includes NULL ({@see self::OPTION_NULL})
+	 * and may include objects implementing {@see \Stringable}.
 	 */
 	final const OPTION_SCALARITY = '_scalarity';
+
+	/**
+	 * Option Name For a Bool - indicating whether null values are accepted
+	 */
+	final const OPTION_NULL = '_null';
+
+	/**
+	 * Option Name For a Bool - indicating if Stringable objects shall be converted to string
+	 */
+	final const OPTION_STRINGIFY = '_stringify';
 
 	/**
 	 * Option Name For Mixed - the default value in case no/empty values are filtered
@@ -34,11 +48,6 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 	 * The default value is silently converted to scalar/array scalarity.
 	 */
 	final const OPTION_DEFAULT = '_default';
-
-	/**
-	 * Option Name For a Bool - indicating whether null values are accepted
-	 */
-	final const OPTION_NULL = '_null';
 
 	/**
 	 * Option Name For a Perl Regex - matches are deleted from string values
@@ -54,8 +63,9 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 
 	public const DEFAULT_OPTIONS = [
 		self::OPTION_SCALARITY => 'scalar',        // only accept scalar values
-		self::OPTION_DEFAULT => null,
 		self::OPTION_NULL => false,                // do NOT accept null values
+		self::OPTION_STRINGIFY => true,            // DO accept \Stringable objects as scalar string
+		self::OPTION_DEFAULT => null,
 		self::OPTION_CLEAN => '/(?:^\\s+|\\s+$)/', // meaning: trim string values
 		self::OPTION_FORMATS => [],
 	] + parent::DEFAULT_OPTIONS;
@@ -112,15 +122,23 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 	 */
 	private function preFilterScalarity(mixed $value): mixed
 	{
+		if ($value instanceof \Stringable && $this->options[self::OPTION_STRINGIFY]) {
+			$value = strval($value);
+		}
 		$type = $this->options[self::OPTION_SCALARITY];
 		if ($type === 'scalar') {
-			if (!is_scalar($value)) {
+			if (!is_scalar($value) && !is_null($value)) {
+				$value = $this->handleIllegalValue($value);
+			}
+		}
+		elseif ($type === 'not-array') {
+			if (is_array($value)) {
 				$value = $this->handleIllegalValue($value);
 			}
 		}
 		elseif ($type === 'array') {
 			if (!is_array($value)) {
-				$value = [ $value ];
+				$value = [$value];
 			}
 		}
 		elseif (!is_null($type)) {
@@ -150,14 +168,20 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 	 */
 	private function preFilterFormats(mixed $value): mixed
 	{
-		if (is_null($value) && !$this->options[self::OPTION_NULL]) {
-			return $this->handleIllegalValue($value);
+		if (is_null($value)) {
+			if (!$this->options[self::OPTION_NULL]) {
+				$this->handleIllegalValue(null);
+			}
+			return null;
 		}
 		$value = $this->convertValue($value);
+		if ($value instanceof \Stringable && $this->options[self::OPTION_STRINGIFY]) {
+			$value = strval($value);
+		}
 		if (!is_string($value)) {
 			return $value;
 		}
-		$value = preg_replace($this->options[self::OPTION_CLEAN], '', $value);
+		$value = preg_replace($this->options[self::OPTION_CLEAN], '', (string)$value);
 		if (!$this->options[self::OPTION_FORMATS]) {
 			return $value;
 		}
