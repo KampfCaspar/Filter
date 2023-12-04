@@ -53,7 +53,7 @@ class DoubleValueFilter extends ValueFilter
 		return doubleval($value);
 	}
 
-	public function doFilterValue(mixed $value): mixed
+	protected function doFilterValue(mixed $value): mixed
 	{
 		$value = $this->extractNumber($value);
 		$min = $this->options[self::OPTION_MIN];

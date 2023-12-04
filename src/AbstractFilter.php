@@ -83,7 +83,8 @@ abstract class AbstractFilter implements FilterInterface
 	 *   * a pre-existing {@see FilterInterface}
 	 *   * a callable
 	 *
-	 * @param mixed[]|string|FilterInterface|callable $filter
+	 * @param array<mixed>|string|FilterInterface|callable $filter
+	 * @param array<string,mixed>                          $parentOptions
 	 */
 	protected static function instantiate(
 		mixed $filter,

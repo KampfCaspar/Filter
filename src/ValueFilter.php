@@ -69,6 +69,9 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 	/**
 	 * Value Filter Creator
 	 * @see self::instantiate()
+	 *
+	 * @param array<mixed>|string|FilterInterface|callable $filter
+	 * @param array<string,mixed> $parentOptions
 	 */
 	public static function createFilter(
 		mixed $filter,

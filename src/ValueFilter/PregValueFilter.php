@@ -18,7 +18,7 @@ use KampfCaspar\Filter\ValueFilter;
 class PregValueFilter extends ValueFilter
 {
 	/**
-	 * Option Name For an Array of Perl Regular Expresstions - values are checked against those
+	 * Option Name For an Array of Perl Regular Expressions - values are checked against those
 	 */
 	final const OPTION_PREGS = 'preg';
 

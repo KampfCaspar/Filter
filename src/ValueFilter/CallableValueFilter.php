@@ -22,7 +22,6 @@ class CallableValueFilter extends ValueFilter
 	protected function doFilterValue(mixed $value): mixed
 	{
 		$callable = $this->options[self::OPTION_CALLABLE];
-		/** @var mixed $old_value */
 		$old_value = $value;
 		$value = $callable($value, $this);
 		if (is_null($value)) {

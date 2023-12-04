@@ -23,7 +23,7 @@ interface ValueFilterInterface extends FilterInterface
 	 * check value and either return it in its proper form or throw
 	 *
 	 * @return mixed                      correct value
-	 * @throws \InvalidArgumentException  if value correction is unfeasable
+	 * @throws \InvalidArgumentException  if value correction is unfeasible
 	 */
 	public function filterValue(mixed $value): mixed;
 }

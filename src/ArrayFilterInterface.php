@@ -25,7 +25,7 @@ interface ArrayFilterInterface extends FilterInterface
 	 *
 	 * @param \ArrayObject<string,mixed>|\ArrayIterator<string,mixed>|array<string,mixed> $object
 	 * @return string[]          collected error messages
-	 * @throws \DomainException  if compliance is unfeasable
+	 * @throws \DomainException  if compliance is unfeasible
 	 */
 	public function filterArray(\ArrayObject|\ArrayIterator|array &$object): array;
 }

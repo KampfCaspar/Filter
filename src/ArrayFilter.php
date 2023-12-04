@@ -35,6 +35,9 @@ abstract class ArrayFilter extends AbstractFilter implements ArrayFilterInterfac
 
 	/**
 	 * Array Filter Creator
+	 *
+	 * @param array<string,mixed> $parentOptions
+	 * @param array<mixed>|string|FilterInterface|callable $filter
 	 * @see self::instantiate()
 	 */
 	public static function createFilter(

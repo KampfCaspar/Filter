@@ -11,7 +11,6 @@
 namespace KampfCaspar\Filter\ValueFilter;
 
 use KampfCaspar\Filter\ValueFilter;
-use KampfCaspar\Filter\ValueFilterInterface;
 
 /**
  * Compounded ValueFilter - applies several ValueFilters in one go

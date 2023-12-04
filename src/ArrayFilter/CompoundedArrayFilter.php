@@ -11,7 +11,6 @@
 namespace KampfCaspar\Filter\ArrayFilter;
 
 use KampfCaspar\Filter\ArrayFilter;
-use KampfCaspar\Filter\ArrayFilterInterface;
 
 /**
  * Compounded ArrayFilter - applies several ArrayFilters in one go

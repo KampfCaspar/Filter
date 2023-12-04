@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU Affero General Public License as published by the Free Software Foundation, either version 3
@@ -17,7 +17,10 @@ use PHPUnit\Framework\TestCase;
 class KeysArrayFilterTest extends TestCase
 {
 
-	private function referenceDetour(KeysArrayFilter $filter, $arr): array
+	/**
+	 * @return string[]
+	 */
+	private function referenceDetour(KeysArrayFilter $filter, mixed $arr): array
 	{
 		return $filter->filterArray($arr);
 	}
