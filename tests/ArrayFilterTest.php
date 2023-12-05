@@ -13,7 +13,6 @@ namespace KampfCaspar\Test\Filter;
 use Beste\Psr\Log\TestLogger;
 use KampfCaspar\Filter\ArrayFilter;
 use KampfCaspar\Filter\ArrayFilterInterface;
-use KampfCaspar\Filter\Exception\OptionsException;
 use KampfCaspar\Test\Filter\Stubs\NullArrayFilterStub;
 use KampfCaspar\Test\Filter\Stubs\NullValueFilterStub;
 use PHPUnit\Framework\TestCase;

@@ -183,7 +183,7 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 		if (!is_string($value)) {
 			return $value;
 		}
-		$value = preg_replace($this->options[self::OPTION_CLEAN], '', (string)$value);
+		$value = preg_replace($this->options[self::OPTION_CLEAN], '', $value);
 		if (!$this->options[self::OPTION_PREG]) {
 			return $value;
 		}

@@ -12,7 +12,6 @@ namespace KampfCaspar\Filter;
 
 use KampfCaspar\Filter\ArrayFilter\CallableArrayFilter;
 use KampfCaspar\Filter\Exception\FilteringException;
-use KampfCaspar\Filter\Exception\OptionsException;
 use Psr\Log\LoggerInterface;
 
 /**
