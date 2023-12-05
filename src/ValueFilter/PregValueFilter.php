@@ -10,6 +10,7 @@
 
 namespace KampfCaspar\Filter\ValueFilter;
 
+use KampfCaspar\Filter\Exception\OptionsException;
 use KampfCaspar\Filter\ValueFilter;
 
 /**
@@ -21,7 +22,7 @@ class PregValueFilter extends ValueFilter
 	protected function convertValue(mixed $value): string
 	{
 		if (!$this->options[self::OPTION_PREG]) {
-			throw new \BadMethodCallException('Preg filter without preg');
+			throw new OptionsException('Preg filter without preg');
 		}
 		return strval($value); // we deal ONLY in strings
 	}

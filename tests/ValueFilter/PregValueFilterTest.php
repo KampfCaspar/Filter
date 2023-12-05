@@ -10,6 +10,7 @@
 
 namespace KampfCaspar\Test\Filter\ValueFilter;
 
+use KampfCaspar\Filter\Exception\OptionsException;
 use KampfCaspar\Filter\ValueFilter\PregValueFilter;
 use PHPUnit\Framework\TestCase;
 
@@ -36,7 +37,7 @@ class PregValueFilterTest extends TestCase
 	public function testFilterValueErrorNoRegex(): void
 	{
 		$filter = new PregValueFilter();
-		self::expectException(\BadMethodCallException::class);
+		self::expectException(OptionsException::class);
 		$filter->filterValue(3.1);
 	}
 
@@ -45,7 +46,7 @@ class PregValueFilterTest extends TestCase
 		$filter = new PregValueFilter([
 			PregValueFilter::OPTION_PREG => 3.1,
 		]);
-		self::expectException(\BadMethodCallException::class);
+		self::expectException(OptionsException::class);
 		$filter->filterValue(3.1);
 	}
 
@@ -54,7 +55,7 @@ class PregValueFilterTest extends TestCase
 		$filter = new PregValueFilter([
 			PregValueFilter::OPTION_PREG => 'abc',
 		]);
-		self::expectException(\BadMethodCallException::class);
+		self::expectException(OptionsException::class);
 		$filter->filterValue(3.1);
 	}
 }

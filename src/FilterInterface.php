@@ -10,6 +10,7 @@
 
 namespace KampfCaspar\Filter;
 
+use KampfCaspar\Filter\Exception\OptionsException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
@@ -33,7 +34,7 @@ interface FilterInterface extends LoggerAwareInterface
 	 *
 	 * @param array<string,mixed> $options
 	 * @return $this
-	 * @throws \BadMethodCallException  on unknown/wrong option
+	 * @throws OptionsException  on unknown option
 	 */
 	public function setOptions(array $options): static;
 

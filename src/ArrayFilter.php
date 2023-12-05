@@ -11,6 +11,8 @@
 namespace KampfCaspar\Filter;
 
 use KampfCaspar\Filter\ArrayFilter\CallableArrayFilter;
+use KampfCaspar\Filter\Exception\FilteringException;
+use KampfCaspar\Filter\Exception\OptionsException;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -48,7 +50,7 @@ abstract class ArrayFilter extends AbstractFilter implements ArrayFilterInterfac
 	{
 		$res = static::instantiate($filter, $logger, $parentOptions);
 		if (!$res instanceof ArrayFilterInterface) {
-			throw new \BadMethodCallException('could not instantiate ArrayFilter');
+			throw new \InvalidArgumentException('could not instantiate ArrayFilter');
 		}
 		return $res;
 	}
@@ -76,7 +78,7 @@ abstract class ArrayFilter extends AbstractFilter implements ArrayFilterInterfac
 	{
 		$filter = $this->options[self::OPTION_NAME] ?: get_class($this);
 		if (!$this->options[self::OPTION_SOFT_FAILURE] && !$softFail) {
-			throw new \DomainException(sprintf(
+			throw new FilteringException(sprintf(
 				'filter %s failure: %s',
 				$filter,
 				$error,

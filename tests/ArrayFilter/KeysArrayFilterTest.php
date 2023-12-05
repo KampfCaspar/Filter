@@ -12,6 +12,7 @@ namespace KampfCaspar\Test\Filter\ArrayFilter;
 
 use Beste\Psr\Log\TestLogger;
 use KampfCaspar\Filter\ArrayFilter\KeysArrayFilter;
+use KampfCaspar\Filter\Exception\FilteringException;
 use PHPUnit\Framework\TestCase;
 
 class KeysArrayFilterTest extends TestCase
@@ -58,7 +59,7 @@ class KeysArrayFilterTest extends TestCase
 		$filter->setOptions([
 			KeysArrayFilter::OPTION_SOFT_FAILURE => false,
 		]);
-		self::expectException(\DomainException::class);
+		self::expectException(FilteringException::class);
 		$filter->filterArray($arr);
 	}
 

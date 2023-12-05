@@ -10,12 +10,14 @@
 
 namespace KampfCaspar\Filter;
 
+use KampfCaspar\Filter\Exception\FilteringException;
+
 /**
  * Filter for ArrayAccess Instances
  *
  * Array Filters do not check only a value but the 'inner consistency' of ArrayAccess
  * instances. They can alter the instance to achieve validity.
- * Strict Array Filters will throw {@see \DomainException} if there is an error,
+ * Strict Array Filters will throw {@see FilteringException} if there is an error,
  * forgiving Array Filters will return an array of string error messages.
  */
 interface ArrayFilterInterface extends FilterInterface
@@ -24,8 +26,8 @@ interface ArrayFilterInterface extends FilterInterface
 	 * check the validity of the ArrayAccess instance, change it for compliance or throw
 	 *
 	 * @param \ArrayObject<string,mixed>|\ArrayIterator<string,mixed>|array<string,mixed> $object
-	 * @return string[]          collected error messages
-	 * @throws \DomainException  if compliance is unfeasible
+	 * @return string[]            collected error messages
+	 * @throws FilteringException  if compliance is unfeasible
 	 */
 	public function filterArray(\ArrayObject|\ArrayIterator|array &$object): array;
 }

@@ -10,6 +10,7 @@
 
 namespace KampfCaspar\Test\Filter\ValueFilter;
 
+use KampfCaspar\Filter\Exception\FilteringException;
 use KampfCaspar\Filter\ValueFilter\AllowedValuesFilter;
 use PHPUnit\Framework\TestCase;
 
@@ -38,7 +39,7 @@ class AllowedValuesFilterTest extends TestCase
 		$filter->setOptions([
 			AllowedValuesFilter::OPTION_SOFT_FAILURE => false,
 		]);
-		self::expectException(\InvalidArgumentException::class);
+		self::expectException(FilteringException::class);
 		$filter->filterValue('gamma');
 	}
 
@@ -63,7 +64,7 @@ class AllowedValuesFilterTest extends TestCase
 		$filter->setOptions([
 			AllowedValuesFilter::OPTION_SOFT_FAILURE => false,
 		]);
-		self::expectException(\InvalidArgumentException::class);
+		self::expectException(FilteringException::class);
 		$filter->filterValue(['alpha']);
 	}
 
@@ -90,7 +91,7 @@ class AllowedValuesFilterTest extends TestCase
 		$filter->setOptions([
 			AllowedValuesFilter::OPTION_SOFT_FAILURE => false,
 		]);
-		self::expectException(\InvalidArgumentException::class);
+		self::expectException(FilteringException::class);
 		$filter->filterValue(['alpha', 'gamma']);
 	}
 }

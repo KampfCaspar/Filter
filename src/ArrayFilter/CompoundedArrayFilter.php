@@ -11,6 +11,7 @@
 namespace KampfCaspar\Filter\ArrayFilter;
 
 use KampfCaspar\Filter\ArrayFilter;
+use KampfCaspar\Filter\Exception\OptionsException;
 
 /**
  * Compounded ArrayFilter - applies several ArrayFilters in one go
@@ -26,7 +27,12 @@ class CompoundedArrayFilter extends ArrayFilter
 	{
 		$errors = [];
 		foreach ($this->options[self::OPTION_COMPOUNDED_FILTERS] as &$filter) {
-			$filter = self::createFilter($filter, null, $this->options);
+			try {
+				$filter = self::createFilter($filter, null, $this->options);
+			}
+			catch (\LogicException $e) {
+				throw new OptionsException('could not get daughter filter', $e->getCode(), $e);
+			}
 			$errors += $filter->filterArray($object);
 		}
 		return $errors;

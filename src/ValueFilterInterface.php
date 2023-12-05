@@ -10,12 +10,14 @@
 
 namespace KampfCaspar\Filter;
 
+use KampfCaspar\Filter\Exception\FilteringException;
+
 /**
  * Interface for Value Filters
  *
  * Value filters accept a mixed value, can validate and transform it and
  * will return a correct value or null. Strict Value Filters will throw
- * {@see \InvalidArgumentException} on uncorrectable values
+ * {@see FilteringException} on uncorrectable values
  */
 interface ValueFilterInterface extends FilterInterface
 {
@@ -23,7 +25,7 @@ interface ValueFilterInterface extends FilterInterface
 	 * check value and either return it in its proper form or throw
 	 *
 	 * @return mixed                      correct value
-	 * @throws \InvalidArgumentException  if value correction is unfeasible
+	 * @throws FilteringException  if value correction is unfeasible
 	 */
 	public function filterValue(mixed $value): mixed;
 }

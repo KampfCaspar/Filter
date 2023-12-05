@@ -10,6 +10,7 @@
 
 namespace KampfCaspar\Filter\ValueFilter;
 
+use KampfCaspar\Filter\Exception\OptionsException;
 use KampfCaspar\Filter\ValueFilter;
 
 /**
@@ -42,11 +43,11 @@ class PregSplitFilter extends ValueFilter
 	{
 		$preg = $this->options[self::OPTION_SPLIT];
 		if (!is_string($preg)) {
-			throw new \BadMethodCallException('perl regular expression must be string');
+			throw new OptionsException('perl regular expression must be string');
 		}
 		$value = @preg_split($preg, $value, $this->options[self::OPTION_LIMIT]);
 		if ($value === false) {
-			throw new \BadMethodCallException('perl regex error: ' . preg_last_error_msg());
+			throw new OptionsException('perl regex error: ' . preg_last_error_msg());
 		}
 		return $value;
 	}

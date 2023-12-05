@@ -10,6 +10,8 @@
 
 namespace KampfCaspar\Filter;
 
+use KampfCaspar\Filter\Exception\FilteringException;
+use KampfCaspar\Filter\Exception\OptionsException;
 use KampfCaspar\Filter\ValueFilter\CallableValueFilter;
 use Psr\Log\LoggerInterface;
 
@@ -91,7 +93,7 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 	{
 		$res = static::instantiate($filter, $logger, $parentOptions);
 		if (!$res instanceof ValueFilterInterface) {
-			throw new \BadMethodCallException('could not instantiate ValueFilter');
+			throw new \InvalidArgumentException('could not instantiate ValueFilter');
 		}
 		return $res;
 	}
@@ -104,7 +106,7 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 		$filter = $this->options[self::OPTION_NAME] ?? get_class($this);
 		$value_str = is_scalar($value) ? (string)$value : gettype($value);
 		if (!$this->options[self::OPTION_SOFT_FAILURE]) {
-			throw new \InvalidArgumentException(sprintf(
+			throw new FilteringException(sprintf(
 				'illegal value for filter %s: %s',
 				$filter,
 				$value_str,
@@ -142,7 +144,7 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 			}
 		}
 		elseif (!is_null($type)) {
-			throw new \BadMethodCallException(sprintf(
+			throw new OptionsException(sprintf(
 				'unknown scalarity value: %s',
 				$type,
 			));
@@ -189,12 +191,12 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 			$format = (array)$format;
 			$count = 0;
 			if (!is_string($format[0])) {
-				throw new \BadMethodCallException('perl regular expression must be string');
+				throw new OptionsException('perl regular expression must be string');
 			}
 			// @phpstan-ignore-next-line as you ignore the prior type check
 			$value = preg_replace($format[0], $format[1] ?? '$0', $value, -1, $count);
 			if (is_null($value)) {
-				throw new \BadMethodCallException('perl regex error: ' . preg_last_error_msg());
+				throw new OptionsException('perl regex error: ' . preg_last_error_msg());
 			}
 			if ($count) {
 				return $value;

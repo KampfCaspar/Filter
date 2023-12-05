@@ -10,6 +10,7 @@
 
 namespace KampfCaspar\Filter;
 
+use KampfCaspar\Filter\Exception\OptionsException;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -124,7 +125,7 @@ abstract class AbstractFilter implements FilterInterface
 			$filter = new $class();
 		}
 		if (!$filter instanceof FilterInterface) {
-			throw new \DomainException('unknown filter specification');
+			throw new \InvalidArgumentException('unknown filter specification');
 		}
 
 		if ($logger) {
@@ -164,7 +165,7 @@ abstract class AbstractFilter implements FilterInterface
 	public function setOptions(array $options): static
 	{
 		if (($unknown = array_diff_key($options, $this->options))) {
-			throw new \BadMethodCallException(sprintf(
+			throw new OptionsException(sprintf(
 				'unknown filter option(s) "%s"',
 				join('", "', $unknown),
 			));

@@ -11,6 +11,7 @@
 namespace KampfCaspar\Test\Filter;
 
 use Beste\Psr\Log\TestLogger;
+use KampfCaspar\Filter\Exception\OptionsException;
 use KampfCaspar\Filter\ValueFilter;
 use KampfCaspar\Filter\ValueFilterInterface;
 use KampfCaspar\Test\Filter\Stubs\NullArrayFilterStub;
@@ -54,7 +55,7 @@ class ValueFilterTest extends TestCase
 		$filter = new NullValueFilterStub([
 			ValueFilter::OPTION_SCALARITY => 'wrong'
 		]);
-		self::expectException(\BadMethodCallException::class);
+		self::expectException(OptionsException::class);
 		self::assertEquals(3, $filter->filterValue(3));
 	}
 
@@ -91,7 +92,7 @@ class ValueFilterTest extends TestCase
 	public function testOptionsError(): void
 	{
 		$filter = new NullValueFilterStub();
-		self::expectException(\BadMethodCallException::class);
+		self::expectException(OptionsException::class);
 		$filter->setOptions([
 			'wrong option' => 'wrong option',
 		]);
@@ -107,13 +108,13 @@ class ValueFilterTest extends TestCase
 			ValueFilterInterface::class,
 			ValueFilter::createFilter([ValueFilter::OPTION_FILTER => NullValueFilterStub::class])
 		);
-		self::expectException(\BadMethodCallException::class);
+		self::expectException(\InvalidArgumentException::class);
 		ValueFilter::createFilter(NullArrayFilterStub::class);
 	}
 
 	public function testCreateFilterIllegalSpec(): void
 	{
-		self::expectException(\DomainException::class);
+		self::expectException(\InvalidArgumentException::class);
 		ValueFilter::createFilter([3]);
 	}
 

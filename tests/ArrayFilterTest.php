@@ -13,6 +13,7 @@ namespace KampfCaspar\Test\Filter;
 use Beste\Psr\Log\TestLogger;
 use KampfCaspar\Filter\ArrayFilter;
 use KampfCaspar\Filter\ArrayFilterInterface;
+use KampfCaspar\Filter\Exception\OptionsException;
 use KampfCaspar\Test\Filter\Stubs\NullArrayFilterStub;
 use KampfCaspar\Test\Filter\Stubs\NullValueFilterStub;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +30,7 @@ class ArrayFilterTest extends TestCase
 			ArrayFilterInterface::class,
 			ArrayFilter::createFilter([ArrayFilter::OPTION_FILTER => NullArrayFilterStub::class])
 		);
-		self::expectException(\BadMethodCallException::class);
+		self::expectException(\InvalidArgumentException::class);
 		ArrayFilter::createFilter(NullValueFilterStub::class);
 	}
 

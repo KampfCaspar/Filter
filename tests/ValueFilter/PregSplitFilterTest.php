@@ -10,6 +10,7 @@
 
 namespace KampfCaspar\Test\Filter\ValueFilter;
 
+use KampfCaspar\Filter\Exception\OptionsException;
 use KampfCaspar\Filter\ValueFilter\PregSplitFilter;
 use PHPUnit\Framework\TestCase;
 
@@ -40,7 +41,7 @@ class PregSplitFilterTest extends TestCase
 		$filter = new PregSplitFilter([
 			PregSplitFilter::OPTION_SPLIT => 3.1,
 		]);
-		self::expectException(\BadMethodCallException::class);
+		self::expectException(OptionsException::class);
 		$filter->filterValue('alpha');
 	}
 
@@ -49,7 +50,7 @@ class PregSplitFilterTest extends TestCase
 		$filter = new PregSplitFilter([
 			PregSplitFilter::OPTION_SPLIT => 'abc',
 		]);
-		self::expectException(\BadMethodCallException::class);
+		self::expectException(OptionsException::class);
 		$filter->filterValue('alpha');
 	}
 
