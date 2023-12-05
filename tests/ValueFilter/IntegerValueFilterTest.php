@@ -35,14 +35,14 @@ class IntegerValueFilterTest extends TestCase
 	public function testRestrictedFormats(): void
 	{
 		$filter = new IntegerValueFilter([
-			IntegerValueFilter::OPTION_FORMATS => 'dec',
+			IntegerValueFilter::OPTION_PREG => 'dec',
 			IntegerValueFilter::OPTION_SOFT_FAILURE => true,
 		]);
 		self::assertEquals(42, $filter->filterValue(42));
 		self::assertEquals(42, $filter->filterValue('42'));
 		self::assertNull($filter->filterValue('0x2a'));
 		$filter->setOptions([
-			IntegerValueFilter::OPTION_FORMATS => ['dec', 'bin'],
+			IntegerValueFilter::OPTION_PREG => ['dec', 'bin'],
 		]);
 		self::assertEquals(42, $filter->filterValue('0b101010'));
 		self::assertNull($filter->filterValue('052'));

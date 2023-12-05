@@ -59,7 +59,7 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 	 * Option Name For an Array of Perl Regexes - format checkers for string values
 	 * @see self::convertValue()
 	 */
-	final const OPTION_FORMATS = '_formats';
+	final const OPTION_PREG = '_preg';
 
 	public const DEFAULT_OPTIONS = [
 		self::OPTION_SCALARITY => 'scalar',        // only accept scalar values
@@ -67,7 +67,7 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 		self::OPTION_STRINGIFY => true,            // DO accept \Stringable objects as scalar string
 		self::OPTION_DEFAULT => null,
 		self::OPTION_CLEAN => '/(?:^\\s+|\\s+$)/', // meaning: trim string values
-		self::OPTION_FORMATS => [],
+		self::OPTION_PREG => [],
 	] + parent::DEFAULT_OPTIONS;
 
 	protected const INHERIT_OPTIONS = [
@@ -154,9 +154,9 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 	 * Convert Value to Usable Type
 	 *
 	 * Values can first be converted to a usable type, e.g. string.
-	 * String values are later checked with {@see self::OPTION_FORMATS}.
+	 * String values are later checked with {@see self::OPTION_PREG}.
 	 *
-	 * @see self::preFilterFormats()
+	 * @see self::preFilterValue()
 	 */
 	protected function convertValue(mixed $value): mixed
 	{
@@ -166,7 +166,7 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 	/**
 	 * Ensure a Value Conforms to Common Format Criteria
 	 */
-	private function preFilterFormats(mixed $value): mixed
+	private function preFilterValue(mixed $value): mixed
 	{
 		if (is_null($value)) {
 			if (!$this->options[self::OPTION_NULL]) {
@@ -182,14 +182,20 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 			return $value;
 		}
 		$value = preg_replace($this->options[self::OPTION_CLEAN], '', (string)$value);
-		if (!$this->options[self::OPTION_FORMATS]) {
+		if (!$this->options[self::OPTION_PREG]) {
 			return $value;
 		}
-		foreach ($this->options[self::OPTION_FORMATS] as $format) {
+		foreach ((array)$this->options[self::OPTION_PREG] as $format) {
 			$format = (array)$format;
 			$count = 0;
+			if (!is_string($format[0])) {
+				throw new \BadMethodCallException('perl regular expression must be string');
+			}
 			// @phpstan-ignore-next-line as you ignore the prior type check
 			$value = preg_replace($format[0], $format[1] ?? '$0', $value, -1, $count);
+			if (is_null($value)) {
+				throw new \BadMethodCallException('perl regex error: ' . preg_last_error_msg());
+			}
 			if ($count) {
 				return $value;
 			}
@@ -243,14 +249,14 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 		$value = $this->preFilterScalarity($value);
 		if (is_array($value) && array_is_list($value)) {
 			foreach ($value as &$one) {
-				$one = $this->preFilterFormats($one);
+				$one = $this->preFilterValue($one);
 				if (!is_null($one)) {
 					$one = $this->doFilterValue($one);
 				}
 			}
 		}
 		else {
-			$value = $this->preFilterFormats($value);
+			$value = $this->preFilterValue($value);
 			if (!is_null($value)) {
 				$value = $this->doFilterValue($value);
 			}

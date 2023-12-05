@@ -34,7 +34,7 @@ class DoubleValueFilter extends ValueFilter
 	public const DEFAULT_OPTIONS = [
 		self::OPTION_MIN => null,
 		self::OPTION_MAX => null,
-		self::OPTION_FORMATS => [
+		self::OPTION_PREG => [
 			'/^(?:-\\+)?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]*)$/'
 		],
 	] + parent::DEFAULT_OPTIONS;

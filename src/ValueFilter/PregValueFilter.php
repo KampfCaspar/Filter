@@ -17,39 +17,19 @@ use KampfCaspar\Filter\ValueFilter;
  */
 class PregValueFilter extends ValueFilter
 {
-	/**
-	 * Option Name For an Array of Perl Regular Expressions - values are checked against those
-	 */
-	final const OPTION_PREGS = '_pregs';
-
-	public const DEFAULT_OPTIONS = [
-		self::OPTION_PREGS => null,
-	] + parent::DEFAULT_OPTIONS;
 
 	protected function convertValue(mixed $value): string
 	{
+		if (!$this->options[self::OPTION_PREG]) {
+			throw new \BadMethodCallException('Preg filter without preg');
+		}
 		return strval($value); // we deal ONLY in strings
 	}
 
-	public function doFilterValue(mixed $value): mixed
+	protected function doFilterValue(mixed $value): mixed
 	{
-		$preg = (array)$this->options[self::OPTION_PREGS];
-		if (!$preg) {
-			throw new \BadMethodCallException('must set one or more perl regular expressions');
-		}
-		foreach ($preg as $one) {
-			if (!is_string($one)) {
-				throw new \BadMethodCallException('perl regular expression must be string');
-			}
-			$match = @preg_match($one, $value);
-			if ($match === false) {
-				throw new \BadMethodCallException('perl regex error: ' . preg_last_error_msg());
-			}
-			if ($match > 0) {
-				return $value;
-			}
-		}
-		return $this->handleIllegalValue($value);
+		// we just use the perl regex in pre-filtering
+		return $value;
 	}
 
 }

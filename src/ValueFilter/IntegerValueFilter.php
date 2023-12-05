@@ -28,13 +28,13 @@ class IntegerValueFilter extends DoubleValueFilter
 
 	public const DEFAULT_OPTIONS = [
 		self::OPTION_CLEAN => '/(?:^\\s+|[_\']|\\s+$)/',
-		self::OPTION_FORMATS => self::NUMBER_FORMATS,
+		self::OPTION_PREG => self::NUMBER_FORMATS,
 	] + parent::DEFAULT_OPTIONS;
 
 	/**
 	 * @inheritdoc
 	 *
-	 * As a special case, the {@see self::OPTION_FORMATS} option
+	 * As a special case, the {@see self::OPTION_PREG} option
 	 * may reference the short names for number formats:
 	 *   * dec: decimal
 	 *   * hex: hexadecimal
@@ -44,11 +44,11 @@ class IntegerValueFilter extends DoubleValueFilter
 	 */
 	public function setOptions(array $options): static
 	{
-		if (isset($options[self::OPTION_FORMATS])) {
-			$options[self::OPTION_FORMATS] = (array)$options[self::OPTION_FORMATS];
-			$shorts = array_intersect_key(self::NUMBER_FORMATS, array_flip($options[self::OPTION_FORMATS]));
-			$surplus = array_diff($options[self::OPTION_FORMATS], array_keys(self::NUMBER_FORMATS));
-			$options[self::OPTION_FORMATS] = $shorts + $surplus;
+		if (isset($options[self::OPTION_PREG])) {
+			$options[self::OPTION_PREG] = (array)$options[self::OPTION_PREG];
+			$shorts = array_intersect_key(self::NUMBER_FORMATS, array_flip($options[self::OPTION_PREG]));
+			$surplus = array_diff($options[self::OPTION_PREG], array_keys(self::NUMBER_FORMATS));
+			$options[self::OPTION_PREG] = $shorts + $surplus;
 		}
 		return parent::setOptions($options);
 	}

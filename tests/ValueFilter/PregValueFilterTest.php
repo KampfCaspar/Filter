@@ -19,13 +19,13 @@ class PregValueFilterTest extends TestCase
 	public function testFilterValue(): void
 	{
 		$filter = new PregValueFilter([
-			PregValueFilter::OPTION_PREGS => '/abc/',
+			PregValueFilter::OPTION_PREG => '/abc/',
 			PregValueFilter::OPTION_SOFT_FAILURE => true,
 		]);
 		self::assertEquals('abcdef', $filter->filterValue('abcdef'));
 		self::assertNull($filter->filterValue('bcdef'));
 		$filter = new PregValueFilter([
-			PregValueFilter::OPTION_PREGS => ['/abc/', '/^f/'],
+			PregValueFilter::OPTION_PREG => ['/abc/', '/^f/'],
 			PregValueFilter::OPTION_SOFT_FAILURE => true,
 		]);
 		self::assertEquals('abcdef', $filter->filterValue('abcdef'));
@@ -43,7 +43,7 @@ class PregValueFilterTest extends TestCase
 	public function testFilterValueErrorNoStringRegex(): void
 	{
 		$filter = new PregValueFilter([
-			PregValueFilter::OPTION_PREGS => 3.1,
+			PregValueFilter::OPTION_PREG => 3.1,
 		]);
 		self::expectException(\BadMethodCallException::class);
 		$filter->filterValue(3.1);
@@ -52,7 +52,7 @@ class PregValueFilterTest extends TestCase
 	public function testFilterValueErrorInvalidRegex(): void
 	{
 		$filter = new PregValueFilter([
-			PregValueFilter::OPTION_PREGS => 'abc',
+			PregValueFilter::OPTION_PREG => 'abc',
 		]);
 		self::expectException(\BadMethodCallException::class);
 		$filter->filterValue(3.1);
