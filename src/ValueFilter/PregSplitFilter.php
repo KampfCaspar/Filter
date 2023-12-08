@@ -36,18 +36,31 @@ class PregSplitFilter extends ValueFilter
 
 	protected function convertValue(mixed $value): string
 	{
-		return strval($value); // we deal ONLY in strings
+		if (is_scalar($value) || $value instanceof \Stringable) {
+			return strval($value); // we deal ONLY in strings
+		}
+		else {
+			return $this->handleIllegalValue($value);
+		}
 	}
 
-	public function doFilterValue(mixed $value): mixed
+	public function filterIndividualValue(mixed $value): mixed
 	{
 		$preg = $this->options[self::OPTION_SPLIT];
 		if (!is_string($preg)) {
-			throw new OptionsException('perl regular expression must be string');
+			throw new OptionsException(sprintf(
+				'%s filter split preg must be string, got %s',
+				$this->getName(),
+				gettype($preg)
+			));
 		}
 		$value = @preg_split($preg, $value, $this->options[self::OPTION_LIMIT]);
 		if ($value === false) {
-			throw new OptionsException('perl regex error: ' . preg_last_error_msg());
+			throw new OptionsException(sprintf(
+				'%s filter preg error: %s',
+				$this->getName(),
+				preg_last_error_msg()
+			));
 		}
 		return $value;
 	}

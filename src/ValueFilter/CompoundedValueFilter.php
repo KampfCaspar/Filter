@@ -27,7 +27,7 @@ class CompoundedValueFilter extends ValueFilter
 	 * @stub
 	 * @codeCoverageIgnore
 	 */
-	protected function doFilterValue(mixed $value): mixed
+	protected function filterIndividualValue(mixed $value): mixed
 	{
 		return $value;
 	}

@@ -19,15 +19,21 @@ use KampfCaspar\Filter\ValueFilter;
 class PregValueFilter extends ValueFilter
 {
 
-	protected function convertValue(mixed $value): string
+	protected function convertValue(mixed $value): ?string
 	{
 		if (!$this->options[self::OPTION_PREG]) {
-			throw new OptionsException('Preg filter without preg');
+			throw new OptionsException(sprintf(
+				'%s filter without mandatory preg',
+				$this->getName()
+			));
 		}
-		return strval($value); // we deal ONLY in strings
+		if (is_scalar($value) || $value instanceof \Stringable) {
+			return strval($value); // we deal ONLY in strings
+		}
+		return $this->handleIllegalValue($value);
 	}
 
-	protected function doFilterValue(mixed $value): mixed
+	protected function filterIndividualValue(mixed $value): mixed
 	{
 		// we just use the perl regex in pre-filtering
 		return $value;

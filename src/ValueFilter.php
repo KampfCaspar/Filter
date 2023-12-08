@@ -99,21 +99,28 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 	}
 
 	/**
+	 * Get Filter Name
+	 */
+	protected function getName(): string
+	{
+		return $this->options[self::OPTION_NAME] ?? strrchr(get_class($this), '\\');
+	}
+
+	/**
 	 * Handle Illegal Values According to Options
 	 */
 	protected function handleIllegalValue(mixed $value): null
 	{
-		$filter = $this->options[self::OPTION_NAME] ?? get_class($this);
 		$value_str = is_scalar($value) ? (string)$value : gettype($value);
 		if (!$this->options[self::OPTION_SOFT_FAILURE]) {
 			throw new FilteringException(sprintf(
 				'illegal value for filter %s: %s',
-				$filter,
+				$this->getName(),
 				$value_str,
 			));
 		}
 		$this->logger?->info('suppressed illegal value for {filter}: {value}', [
-			'filter' => $filter,
+			'filter' => $this->getName(),
 			'value' => $value_str,
 		]);
 		return null;
@@ -191,12 +198,20 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 			$format = (array)$format;
 			$count = 0;
 			if (!is_string($format[0])) {
-				throw new OptionsException('perl regular expression must be string');
+				throw new OptionsException(sprintf(
+					'%s filter perl regular expression must be string, got %s',
+					$this->getName(),
+					gettype($format[0])
+				));
 			}
 			// @phpstan-ignore-next-line as you ignore the prior type check
-			$value = preg_replace($format[0], $format[1] ?? '$0', $value, -1, $count);
+			$value = @preg_replace($format[0], $format[1] ?? '$0', $value, -1, $count);
 			if (is_null($value)) {
-				throw new OptionsException('perl regex error: ' . preg_last_error_msg());
+				throw new OptionsException(sprintf(
+					'%s filter perl regex error: %s',
+					$this->getName(),
+					preg_last_error_msg()
+				));
 			}
 			if ($count) {
 				return $value;
@@ -224,7 +239,8 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 			$value = $default;
 			$scalarity = $this->options[self::OPTION_SCALARITY];
 			if (is_scalar($value) && $scalarity === 'list') {
-				$this->logger?->warning('scalar default value "{value}" forced to array', [
+				$this->logger?->warning('scalar default value "{value}" forced to list', [
+					'filter' => $this->getName(),
 					'value' => $value,
 				]);
 				$value = (array)$value;
@@ -232,6 +248,7 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 			if (is_array($value) && !is_null($scalarity) && $scalarity !== 'list') {
 				$first = reset($value);
 				$this->logger?->warning('array default value forced to its first element "{first}"', [
+					'filter' => $this->getName(),
 					'first' => $first,
 					'value' => $value,
 				]);
@@ -244,7 +261,7 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 	/**
 	 * Actually Filter a Single Value
 	 */
-	abstract protected function doFilterValue(mixed $value): mixed;
+	abstract protected function filterIndividualValue(mixed $value): mixed;
 
 	public function filterValue(mixed $value): mixed
 	{
@@ -253,14 +270,14 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 			foreach ($value as &$one) {
 				$one = $this->preFilterValue($one);
 				if (!is_null($one)) {
-					$one = $this->doFilterValue($one);
+					$one = $this->filterIndividualValue($one);
 				}
 			}
 		}
 		else {
 			$value = $this->preFilterValue($value);
 			if (!is_null($value)) {
-				$value = $this->doFilterValue($value);
+				$value = $this->filterIndividualValue($value);
 			}
 		}
 		return $this->postFilterDefault($value);

@@ -21,7 +21,7 @@ class NullValueFilterStub extends ValueFilter
 		throw new \Exception('success');
 	}
 
-	protected function doFilterValue(mixed $value): mixed
+	protected function filterIndividualValue(mixed $value): mixed
 	{
 		return $value;
 	}

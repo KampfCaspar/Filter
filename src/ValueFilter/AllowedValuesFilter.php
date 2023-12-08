@@ -26,7 +26,7 @@ class AllowedValuesFilter extends ValueFilter
 		self::OPTION_WHITELIST => [],
 	] + parent::DEFAULT_OPTIONS;
 
-	protected function doFilterValue(mixed $value): mixed
+	protected function filterIndividualValue(mixed $value): mixed
 	{
 		if (!in_array($value, (array)$this->options[self::OPTION_WHITELIST], true)) {
 			$value = $this->handleIllegalValue($value);

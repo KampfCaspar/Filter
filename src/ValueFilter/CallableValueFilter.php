@@ -19,7 +19,7 @@ class CallableValueFilter extends ValueFilter
 		self::OPTION_CALLABLE => null,
 	] + parent::DEFAULT_OPTIONS;
 
-	protected function doFilterValue(mixed $value): mixed
+	protected function filterIndividualValue(mixed $value): mixed
 	{
 		$callable = $this->options[self::OPTION_CALLABLE];
 		$old_value = $value;
