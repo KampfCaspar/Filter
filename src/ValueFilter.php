@@ -160,19 +160,6 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 	}
 
 	/**
-	 * Convert Value to Usable Type
-	 *
-	 * Values can first be converted to a usable type, e.g. string.
-	 * String values are later checked with {@see self::OPTION_PREG}.
-	 *
-	 * @see self::preFilterValue()
-	 */
-	protected function convertValue(mixed $value): mixed
-	{
-		return $value;
-	}
-
-	/**
 	 * Ensure a Value Conforms to Common Format Criteria
 	 */
 	private function preFilterValue(mixed $value): mixed
@@ -259,12 +246,38 @@ abstract class ValueFilter extends AbstractFilter implements ValueFilterInterfac
 	}
 
 	/**
+	 * Check if the Filter Should Be Skipped
+	 *
+	 * Skipping should be available if a filter does not accept its own output.
+	 */
+	protected function shouldFilterSkip(mixed $value): bool
+	{
+		return false;
+	}
+
+	/**
+	 * Convert Value to Usable Type
+	 *
+	 * Values can first be converted to a usable type, e.g. string.
+	 * String values are later checked with {@see self::OPTION_PREG}.
+	 *
+	 * @see self::preFilterValue()
+	 */
+	protected function convertValue(mixed $value): mixed
+	{
+		return $value;
+	}
+
+	/**
 	 * Actually Filter a Single Value
 	 */
 	abstract protected function filterIndividualValue(mixed $value): mixed;
 
 	public function filterValue(mixed $value): mixed
 	{
+		if ($this->shouldFilterSkip($value)) {
+			return $value;
+		}
 		$value = $this->preFilterScalarity($value);
 		if (is_array($value) && array_is_list($value)) {
 			foreach ($value as &$one) {

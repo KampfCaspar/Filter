@@ -34,7 +34,17 @@ class PregSplitFilter extends ValueFilter
 		self::OPTION_LIMIT => -1,
 	] + parent::DEFAULT_OPTIONS;
 
-	protected function convertValue(mixed $value): string
+	protected function shouldFilterSkip(mixed $value): bool
+	{
+		// we require non-array but will accept our own output
+		if (is_array($value)) {
+			return array_is_list($value)
+				&& count(array_filter($value, 'is_scalar')) === count($value);
+		}
+		return false;
+	}
+
+	protected function convertValue(mixed $value): ?string
 	{
 		if (is_scalar($value) || $value instanceof \Stringable) {
 			return strval($value); // we deal ONLY in strings

@@ -24,8 +24,7 @@ class PregSplitFilterTest extends TestCase
 		]);
 		self::assertEquals(['alpha'], $filter->filterValue('alpha'));
 		self::assertEquals(['alpha', 'beta'], $filter->filterValue('alpha  beta'));
-		self::assertEquals([['alpha', 'beta'], ['gamma', 'delta']],
-			$filter->filterValue(['alpha  beta', 'gamma delta']));
+		self::assertEquals(['alpha', 'beta'], $filter->filterValue(['alpha', 'beta']));
 		$filter->setOptions([
 			PregSplitFilter::OPTION_SPLIT => '/\\s*,\\s*/',
 		]);
